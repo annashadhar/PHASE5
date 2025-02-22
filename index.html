@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PHA5E - Digital Experiences</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      cursor: pointer;
+      opacity: 0;
+    }
+
+    .menu {
+      width: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      z-index: 3;
+    }
+
+    .menu div {
+      width: 100%;
+      height: 3px;
+      background-color: white;
+    }
+
+    .nav-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background-color: rgba(18, 18, 18, 0.95);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 20px;
+      transform: translateY(-100%);
+      transition: transform 0.6s ease;
+      z-index: 4;
+    }
+
+    .nav-overlay.active {
+      transform: translateY(0);
+    }
+
+    .nav-overlay button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .nav-overlay button:hover {
+      color: #ff7a7a;
+    }
+
+    .hero {
+      padding: 40px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .hero h2 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .hero h2::after {
+      content: "";
+      display: block;
+      width: 100%;
+      height: 4px;
+      background-color: #ff7a7a;
+      margin-top: 8px;
+    }
+
+    .images {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .image-container {
+      position: relative;
+      overflow: hidden;
+      width: calc(50% - 15px);
+      border-radius: 10px;
+      transition: transform 0.3s ease, filter 0.5s ease;
+    }
+
+    .image-container img {
+      width: 100%;
+      height: auto;
+      transition: filter 0.5s ease, transform 0.2s ease;
+    }
+
+    .image-container:hover img {
+      filter: none;
+      transform: scale(1.1);
+    }
+
+    .image-container:not(:hover) img {
+      filter: grayscale(100%) contrast(0.7);
+    }
+
+    @media (max-width: 768px) {
+      .hero h2 {
+        font-size: 28px;
+      }
+
+      .image-container {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo" id="logo">PHA5E</div>
+    <div class="menu" id="menuToggle">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </header>
+
+  <div class="nav-overlay" id="navOverlay">
+    <button>HOME</button>
+    <button>OUR VISION</button>
+    <button>OUR PROJECTS</button>
+    <button>CONTACT US</button>
+  </div>
+
+  <section class="hero" id="heroSection">
+    <h2>IMAGINING UNIQUE CONCEPTS AND DIGITAL EXPERIENCES</h2>
+    <div class="images">
+      <div class="image-container">
+        <img src="img/image1.jpeg" alt="Concept 1" />
+      </div>
+      <div class="image-container">
+        <img src="img/image2.jpeg" alt="Concept 2" />
+      </div>
+      <div class="image-container">
+        <img src="img/image3.jpeg" alt="Concept 3" />
+      </div>
+      <div class="image-container">
+        <img src="img/image4.jpeg" alt="Concept 4" />
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const logo = document.getElementById("logo");
+    const menuToggle = document.getElementById("menuToggle");
+    const navOverlay = document.getElementById("navOverlay");
+    const heroSection = document.getElementById("heroSection");
+
+    // Logo animation: fade-in and slide to the left
+    gsap.fromTo(".logo", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 1, ease: "power2.out" });
+    gsap.to(".logo", { delay: 1.2, x: -window.innerWidth / 2 + 100, duration: 1, ease: "power2.inOut" });
+
+    // Clicking logo brings back hero section with transition
+    logo.addEventListener("click", () => {
+      gsap.to(navOverlay, { y: "-100%", duration: 0.6, ease: "power2.inOut", onComplete: () => navOverlay.classList.remove("active") });
+      gsap.fromTo(heroSection, { opacity: 0 }, { opacity: 1, duration: 0.8, ease: "power2.out" });
+    });
+
+    // Menu toggle: open overlay with only menu visible
+    menuToggle.addEventListener("click", () => {
+      navOverlay.classList.add("active");
+      gsap.fromTo(navOverlay, { y: "-100%" }, { y: "0%", duration: 0.6, ease: "power2.out" });
+      gsap.to(heroSection, { opacity: 0, duration: 0.5, ease: "power2.out" });
+    });
+
+    // Images mouse movement effect
+    document.querySelectorAll(".image-container").forEach(container => {
+      container.addEventListener("mousemove", e => {
+        const rect = container.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width - 0.5) * 15;
+        const y = ((e.clientY - rect.top) / rect.height - 0.5) * 15;
+        gsap.to(container, { x, y, duration: 0.3, ease: "power2.out" });
+      });
+
+      container.addEventListener("mouseleave", () => {
+        gsap.to(container, { x: 0, y: 0, duration: 0.3, ease: "power2.out" });
+      });
+    });
+  </script>
+</body>
+</html>
